@@ -8,7 +8,7 @@ export function Game() {
     useGameState();
 
   return (
-    <div className={styles['game']}>
+    <div className="flex flex-col items-center w-40 mx-auto my-24 border border-black p-5">
       <GameInfo isDraw={isDraw} winnerSymbol={winnerSymbol} currentStep={currentStep} />
       <div className={styles['game-field']}>
         {cells.map((symbol, index) => (
