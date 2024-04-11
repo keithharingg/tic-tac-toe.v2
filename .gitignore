@@ -1,1 +1,7 @@
 node_modules/
+# Next.js build output
+.next/
+out/
+# webpack build output
+*.pack.gz
+
