@@ -1,7 +1,6 @@
 import ResetButton from '../reset-button';
 import { GameCell } from './game-cell';
 import { GameInfo } from './game-info';
-import styles from './game.module.css';
 import { useGameState } from './use-game-state';
 
 export function Game() {
