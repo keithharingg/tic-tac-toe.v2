@@ -1,15 +1,8 @@
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { CircleIcon } from './icons/circle-icon';
-import { CrossIcon } from './icons/cross-icon';
+import { GAME_SYMBOLS } from './constants';
 import { UiButton } from '../uikit/ui-button';
-
-const GAME_SYMBOLS = {
-  CIRCLE: 'circle',
-  CROSS: 'cross',
-  TRIANGLE: 'triangle',
-  SQUARE: 'square',
-};
+import { GameSymbol } from './game-symbol';
 
 const MOVE_ORDER = [
   GAME_SYMBOLS.CIRCLE,
@@ -25,8 +18,11 @@ const getNextMove = (currentMove) => {
 
 export function GameField({ className }) {
   const [cells, setCells] = useState(() => new Array(19 * 19).fill(null));
-  const [currentMove, setCurrentMove] = useState(GAME_SYMBOLS.CIRCLE);
+  const [currentMove, setCurrentMove] = useState(GAME_SYMBOLS.TRIANGLE);
   const nextMove = getNextMove(currentMove);
+  const handleCellClick = (index) => {
+    setCurrentMove((prevCurrentMove) => getNextMove(prevCurrentMove));
+  };
   const actions = (
     <>
       <UiButton size="md" variant="primary">
@@ -41,8 +37,10 @@ export function GameField({ className }) {
     <GameFieldLayout className={className}>
       <GameMoveInfo currentMove={currentMove} nextMove={nextMove} actions={actions} />
       <GameGrid>
-        {cells.map((_, i) => (
-          <GameCell key={i}></GameCell>
+        {cells.map((symbol, index) => (
+          <GameCell onClick={() => handleCellClick(index)} key={index}>
+            {symbol && <GameSymbol symbol={symbol} className="w-5 h-5" />}
+          </GameCell>
         ))}
       </GameGrid>
     </GameFieldLayout>
@@ -62,10 +60,10 @@ function GameMoveInfo({ actions, currentMove, nextMove }) {
     <div className="flex gap-3 items-center">
       <div className="mr-auto">
         <div className="flex items-center gap-1 tetx-xl leading-tight font-semibold">
-          Move: <CircleIcon className="w-5 h-5" /> {currentMove}
+          Move: <GameSymbol symbol={currentMove} className="w-5 h-5" />
         </div>
         <div className="flex items-center gap-1 text-xs leading-tight text-slate-400">
-          Next: <CrossIcon /> {nextMove}
+          Next: <GameSymbol symbol={nextMove} className="w-3 h-3" />
         </div>
       </div>
       {actions}
@@ -81,9 +79,11 @@ function GameGrid({ children }) {
   );
 }
 
-function GameCell({ children }) {
+function GameCell({ children, onClick }) {
   return (
-    <button className="border border-slate-200 -ml-px -mt-px flex items-center justify-center">
+    <button
+      onClick={onClick}
+      className="border border-slate-200 -ml-px -mt-px flex items-center justify-center">
       {children}
     </button>
   );
