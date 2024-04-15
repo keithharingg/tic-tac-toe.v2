@@ -5,7 +5,10 @@ import { CrossIcon } from './icons/cross-icon';
 export function GameInfo({ className }) {
   return (
     <div
-      className={clsx('bg-white rounded-2xl shadow-md px-8 py-4 flex justify-between', className)}>
+      className={clsx(
+        'bg-white rounded-2xl shadow-md px-8 py-4 flex justify-between gap-3',
+        className,
+      )}>
       <div className="flex gap-3 items-center">
         <div className="relative">
           <Profile className="w-44" />
