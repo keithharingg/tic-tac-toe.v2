@@ -6,6 +6,7 @@ import avatarSrc2 from './avatars/avatar-2.png';
 import avatarSrc3 from './avatars/avatar-3.png';
 import avatarSrc4 from './avatars/avatar-4.png';
 import { GAME_SYMBOLS } from './constants';
+import { useEffect, useState } from 'react';
 
 const players = [
   {
@@ -38,7 +39,7 @@ const players = [
   },
 ];
 
-export function GameInfo({ className, playersCount }) {
+export function GameInfo({ className, playersCount, currentMove }) {
   return (
     <div
       className={clsx(
@@ -46,13 +47,44 @@ export function GameInfo({ className, playersCount }) {
         className,
       )}>
       {players.slice(0, playersCount).map((player, index) => (
-        <PlayerInfo playerInfo={player} key={player.id} isRight={index % 2 === 1} />
+        <PlayerInfo
+          playerInfo={player}
+          key={player.id}
+          isRight={index % 2 === 1}
+          isTimerRunning={currentMove === player.symbol}
+        />
       ))}
     </div>
   );
 }
 
-function PlayerInfo({ playerInfo, isRight }) {
+function PlayerInfo({ playerInfo, isRight, isTimerRunning }) {
+  const [seconds, setSeconds] = useState(60);
+
+  const isDanger = seconds < 10;
+
+  useEffect(() => {
+    if (isTimerRunning) {
+      const interval = setInterval(() => {
+        setSeconds((s) => Math.max(s - 1, 0));
+      }, 1000);
+      return () => {
+        clearInterval(interval);
+        setSeconds(60);
+      };
+    }
+  }, [isTimerRunning]);
+
+  const minuteString = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const secondString = String(Math.floor(seconds % 60)).padStart(2, '0');
+
+  const getTimerColor = () => {
+    if (isTimerRunning) {
+      return isDanger ? 'text-orange-600' : 'text-slate-900';
+    } else {
+      return 'text-slate-300';
+    }
+  };
   return (
     <div className="flex gap-3 items-center">
       <div className={clsx('relative', isRight && 'order-3')}>
@@ -67,8 +99,9 @@ function PlayerInfo({ playerInfo, isRight }) {
         </div>
       </div>
       <div className={clsx('h-6 w-px bg-slate-300', isRight && 'order-2')} />
-      <div className={clsx('text-slate-900 text-lg font-semibold', isRight && 'order-1')}>
-        01:08
+      <div
+        className={clsx('text-lg font-semibold w-[60px]', isRight && 'order-1', getTimerColor())}>
+        {minuteString}:{secondString}
       </div>
     </div>
   );
