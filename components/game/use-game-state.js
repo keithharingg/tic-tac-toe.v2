@@ -3,15 +3,16 @@ import { GAME_SYMBOLS } from './constants';
 import { computeWinner, getNextMove } from './model';
 
 export function useGameState(playersCount) {
-  const [{ cells, currentMove }, setGameState] = useState(() => ({
+  const [{ cells, currentMove, playersTimeOver }, setGameState] = useState(() => ({
     cells: new Array(19 * 19).fill(null),
     currentMove: GAME_SYMBOLS.CROSS,
     playersTimeOver: [],
   }));
 
   const winnerSequence = computeWinner(cells);
+  const nextMove = getNextMove(currentMove, playersCount, playersTimeOver);
 
-  const nextMove = getNextMove(currentMove, playersCount);
+  const winnerSymbol = nextMove === currentMove ? currentMove : winnerSequence?.[0];
 
   const handleCellClick = (index) => {
     setGameState((prevGameState) => {
@@ -20,9 +21,15 @@ export function useGameState(playersCount) {
         // if not occupied, then update game state
         return {
           ...prevGameState,
-          currentMove: getNextMove(prevGameState.currentMove, playersCount),
+          currentMove: getNextMove(
+            prevGameState.currentMove,
+            playersCount,
+            prevGameState.playersTimeOver,
+          ),
           cells: prevGameState.cells.map((cell, i) =>
-            i === index ? getNextMove(prevGameState.currentMove, playersCount) : cell,
+            i === index
+              ? getNextMove(prevGameState.currentMove, playersCount, prevGameState.playersTimeOver)
+              : cell,
           ),
         };
       } else {
@@ -37,7 +44,11 @@ export function useGameState(playersCount) {
       return {
         ...prevGameState,
         playersTimeOver: [...prevGameState.playersTimeOver, symbol],
-        currentMove: getNextMove(prevGameState.currentMove, playersCount),
+        currentMove: getNextMove(
+          prevGameState.currentMove,
+          playersCount,
+          prevGameState.playersTimeOver,
+        ),
       };
     });
   };
@@ -49,5 +60,6 @@ export function useGameState(playersCount) {
     currentMove,
     nextMove,
     winnerSequence,
+    winnerSymbol,
   };
 }

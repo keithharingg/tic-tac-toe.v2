@@ -60,7 +60,7 @@ export function GameInfo({ className, playersCount, currentMove, isWinner, onPla
 }
 
 function PlayerInfo({ playerInfo, isRight, isTimerRunning, onTimeOver }) {
-  const [seconds, setSeconds] = useState(60);
+  const [seconds, setSeconds] = useState(6);
 
   const isDanger = seconds < 10;
 
@@ -71,7 +71,7 @@ function PlayerInfo({ playerInfo, isRight, isTimerRunning, onTimeOver }) {
       }, 1000);
       return () => {
         clearInterval(interval);
-        setSeconds(60);
+        setSeconds(6);
       };
     }
   }, [isTimerRunning]);
