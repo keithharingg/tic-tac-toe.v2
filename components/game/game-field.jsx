@@ -29,6 +29,7 @@ export function GameField({
           <GameCell
             onClick={() => handleCellClick(index)}
             key={index}
+            disabled={!!winnerSequence}
             isWinner={winnerSequence?.includes(index)}>
             {symbol && <GameSymbol symbol={symbol} className="w-5 h-5" />}
           </GameCell>
@@ -70,10 +71,11 @@ function GameGrid({ children }) {
   );
 }
 
-function GameCell({ children, onClick, isWinner }) {
+function GameCell({ children, onClick, isWinner, disabled }) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={clsx(
         'border border-slate-200 -ml-px -mt-px flex items-center justify-center',
         isWinner && 'bg-orange-600/10',

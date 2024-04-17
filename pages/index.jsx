@@ -4,14 +4,20 @@ import { Header } from '../components/header';
 
 export default function HomePage() {
   const [playersCount] = useState(2);
-  const { handleCellClick, cells, currentMove, nextMove, winnerSequence } =
+  const { handleCellClick, handlePlayerTimeOver, cells, currentMove, nextMove, winnerSequence } =
     useGameState(playersCount);
   return (
     <div className="bg-slate-50 min-h-screen">
       <Header />
       <main className="pt-6 mx-auto w-max">
         <GameTitle playersCount={playersCount} />
-        <GameInfo currentMove={currentMove} playersCount={playersCount} className="mt-4" />
+        <GameInfo
+          onPlayerTimeOver={handlePlayerTimeOver}
+          isWinner={!!winnerSequence}
+          currentMove={currentMove}
+          playersCount={playersCount}
+          className="mt-4"
+        />
         <GameField
           handleCellClick={handleCellClick}
           cells={cells}

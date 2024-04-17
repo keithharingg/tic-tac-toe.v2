@@ -6,6 +6,7 @@ export function useGameState(playersCount) {
   const [{ cells, currentMove }, setGameState] = useState(() => ({
     cells: new Array(19 * 19).fill(null),
     currentMove: GAME_SYMBOLS.CROSS,
+    playersTimeOver: [],
   }));
 
   const winnerSequence = computeWinner(cells);
@@ -31,8 +32,19 @@ export function useGameState(playersCount) {
     });
   };
 
+  const handlePlayerTimeOver = (symbol) => {
+    setGameState((prevGameState) => {
+      return {
+        ...prevGameState,
+        playersTimeOver: [...prevGameState.playersTimeOver, symbol],
+        currentMove: getNextMove(prevGameState.currentMove, playersCount),
+      };
+    });
+  };
+
   return {
     handleCellClick,
+    handlePlayerTimeOver,
     cells,
     currentMove,
     nextMove,
